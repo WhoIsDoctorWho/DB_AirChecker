@@ -23,6 +23,7 @@ module.exports = {
         return airModel.insertMany(data);        
     },
     delete: function(id) {
+        return airModel.deleteMany();
         return airModel.findOneAndDelete({_id: id});
     }    
 };

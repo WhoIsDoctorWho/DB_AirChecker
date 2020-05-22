@@ -8,10 +8,30 @@ const mongoose = require('mongoose');
 const config = require('./config');
 
 
-const connectOptions = { useNewUrlParser: true };
-mongoose.connect(config.DatabaseUrl, connectOptions)
+let dbOptions = { useNewUrlParser: true };
+if(config.DatabaseUrl.indexOf('replicaSet') > - 1) {
+    dbOptions = {
+      db: {native_parser: true},
+      replset: {
+        auto_reconnect:false,
+        poolSize: 10,
+        socketOptions: {
+          keepAlive: 1000,
+          connectTimeoutMS: 30000
+        }
+      },
+      server: {
+        poolSize: 5,
+        socketOptions: {
+          keepAlive: 1000,
+          connectTimeoutMS: 30000
+        }
+      }
+    };
+  };
+mongoose.connect(config.DatabaseUrl, dbOptions)
 	.then(() => console.log("MongoDB connected"))
-	.catch(() => console.log("ERROR: MongoDB not connected"));
+	.catch(x => console.log("ERROR: MongoDB not connected" + x));
 
 app.get("/", (req,res) => {    
     const airs = validator.ValidateAirConstituents(generator.GenerateAirArray());
@@ -20,6 +40,12 @@ app.get("/", (req,res) => {
         res.end();
     });
     
+});
+app.get("/drop", (req,res) => {    
+    air.delete().then(() => {
+        console.log(`Drop`);
+        res.end();
+    });    
 });
 
 app.get("/air", (req,res) => {
