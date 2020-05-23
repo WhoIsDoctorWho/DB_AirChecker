@@ -22,8 +22,7 @@ module.exports = {
     create: async function(data) { 
         return airModel.insertMany(data);        
     },
-    delete: function(id) {
+    delete: function() {
         return airModel.deleteMany();
-        return airModel.findOneAndDelete({_id: id});
     }    
 };

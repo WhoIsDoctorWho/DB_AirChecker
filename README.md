@@ -1,0 +1,1 @@
+sudo mongod --dbpath /var/lib/mongodb/first --port 27001 --replSet My_Replica_Set --fork --logpath /var/log/mongodb/my_database_1.log

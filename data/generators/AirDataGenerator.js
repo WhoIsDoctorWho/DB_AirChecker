@@ -1,8 +1,7 @@
 function GenerateTemperature(){
     return GenerateRandomNumber(20, 26);
 }
-
-function GenerateHumidity(){
+function GenerateHumidity(temperature){
     return GenerateRandomNumber(38,62);
 }
 
@@ -15,11 +14,17 @@ function GenerateO2(){
 function GenerateCO2(){
     return GenerateRandomNumber(0.03,0.09);
 }
-function GeneratePM10(){
-    return GenerateRandomNumber(0.005,0.05);
+function GeneratePM(k, humidity) {  
+    let eps = 0.02;    
+    if(humidity < 60 && humidity > 40 && +GenerateRandomNumber(-1, 40) < 0)
+        eps *= 5;
+    return +k / +humidity + +GenerateRandomNumber(-eps, eps);
 }
-function GeneratePM2_5(){
-    return GenerateRandomNumber(0.005,0.05);
+function GeneratePM10(humidity) {  
+    return GeneratePM(15, humidity);
+}
+function GeneratePM2_5(humidity){
+    return GeneratePM(9.25, humidity);
 }
 
 function GenerateRandomNumber(max, min) {    
