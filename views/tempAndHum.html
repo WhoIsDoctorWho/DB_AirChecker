@@ -45,6 +45,11 @@
                 };
 
                 var chart = new google.charts.Line(document.getElementById('chart_div'));
+                // google.visualization.events.addListener(chart, 'ready', function () {
+                //     var imgUri = chart.getImageURI();
+                //     // do something with the image URI, like:
+                //     document.getElementById('chartImg').src = imgUri;
+                // });
                 chart.draw(data, google.charts.Line.convertOptions(options));
             }, 'json');
         }
@@ -52,8 +57,11 @@
 </head>
 
 <body>
-    <!--Div that will hold the pie chart-->
+    <a href="http://localhost:3000">
+        <h1>Go gome</h1>
+    </a>
     <div id="chart_div"></div>
+    <img src="" alt="" id="chartImg">
 </body>
 
 </html>

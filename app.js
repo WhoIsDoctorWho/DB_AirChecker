@@ -46,32 +46,25 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 app.get("/", async (req,res) => {   
-    await air.delete();    
-    const airs = validator.ValidateAirConstituents(generator.GenerateAirArray());
-    await air.create(airs)
-    console.log(`Added ${airs.length} items`);
-    res.end();    
+    res.render('index');
 });
-app.get("/drop", (req,res) => {    
-    air.delete().then(() => {
-        console.log(`Drop`);
-        res.end();
-    });    
+app.get("/randomize", async (req,res) => {   
+  await air.delete();    
+  const airs = validator.ValidateAirConstituents(generator.GenerateAirArray());
+  await air.create(airs)
+  console.log(`Added ${airs.length} items`);
+  res.redirect('/air');
 });
 
-app.get("/air", (req,res) => {
-    air.getAll()
-        .then(airs => {
-            airs.forEach(air => {                
-                res.write(`Temperature: ${air.temperature}\tHumidity: ${air.humidity}\tNi: ${air.ni}\n`);                
-            });
-            res.end();
-        })
-        .catch(() => {
-            res.status(404).write("Not found");
-            res.end();
-        });
-                    
+app.get("/air", async (req,res) => {
+  const airs = await air.getAll();
+  let index = 1;
+  airs.forEach(air => {                
+    res.write(`${index++}. Date: ${air.date.toLocaleDateString("en-US")}
+    Temperature: ${air.temperature}\tHumidity: ${air.humidity}\tNi: ${air.ni}\tCO2: ${air.co2}\tO2: ${air.o2}\t
+    pm10: ${air.pm10}\tpm2.5: ${air.pm2_5}\n`);                
+  });
+  res.end();                  
 });
 
 app.get("/airaverage/data", (req, res) => {
