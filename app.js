@@ -81,7 +81,7 @@ app.get("/aircomposition/data", (req, res) => {
       let data = [
         {
           'name': 'CO2',
-          'amount': averageCO2 * 50
+          'amount': averageCO2 * 10
         },
         {
           'name': 'O2',
