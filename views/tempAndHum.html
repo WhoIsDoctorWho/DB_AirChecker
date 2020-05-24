@@ -43,12 +43,7 @@
                     }
                 };
 
-                var chart = new google.charts.Line(document.getElementById('chart_div'));
-                // google.visualization.events.addListener(chart, 'ready', function () {
-                //     var imgUri = chart.getImageURI();
-                //     // do something with the image URI, like:
-                //     document.getElementById('chartImg').src = imgUri;
-                // });
+                var chart = new google.charts.Line(document.getElementById('chart_div'));                
                 chart.draw(data, google.charts.Line.convertOptions(options));
             }, 'json');
         }

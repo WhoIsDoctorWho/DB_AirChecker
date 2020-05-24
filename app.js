@@ -99,21 +99,21 @@ app.get("/airaverage", (req, res) => {
   res.render('airAverage');
 });
 
-app.get("/pmVsHum/data", (req, res) => {
-  air.getAll()
-    .then(airs => {
-      let humidity = [];
-      for (let i = 0; i < airs.length; ++i) {
-        let item = airs[i];
-        let pollution = (item.pm10 + item.pm2_5); 
-        humidity.push([pollution, item.humidity]);
-      }
-      res.json(humidity);
-    })
-    .catch(() => {
-      res.status(404).write("Not found");
-      res.end();
-    });
+app.get("/pmVsHum/data", async (req, res) => {
+  const airs = await air.getAll()    
+  let humidity = [];
+  const coordinates = airs.map(obj => {
+    const pollution = obj.pm10 + obj.pm2_5;
+    const humidity = obj.humidity;
+    return [pollution, humidity];
+  });  
+  const regression = Regression.linear(coordinates);
+  for (let i = 0; i < airs.length; ++i) {
+    let item = airs[i];
+    let pollution = (item.pm10 + item.pm2_5); 
+    humidity.push([pollution, item.humidity, regression.predict(pollution)[1]]);
+  }
+  res.json(humidity);    
 });
 app.get("/pmVsHum", (req, res) => {
   res.render('pmVsHum');
