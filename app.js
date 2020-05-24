@@ -50,7 +50,7 @@ app.get("/", async (req,res) => {
 });
 app.get("/randomize", async (req,res) => {   
   await air.delete();    
-  const airs = validator.ValidateAirConstituents(generator.GenerateAirArray());
+  const airs = validator.Validate(generator.GenerateAirArray());
   await air.create(airs)
   console.log(`Added ${airs.length} items`);
   res.redirect('/air');
