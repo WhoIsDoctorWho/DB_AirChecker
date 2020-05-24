@@ -48,6 +48,12 @@ app.set('view engine', 'html');
 app.get("/", async (req,res) => {   
     res.render('index');
 });
+app.get("/drop", (req,res) => {    
+  air.delete().then(() => {
+      console.log(`Drop`);
+      res.end();
+  });    
+});
 app.get("/randomize", async (req,res) => {   
   await air.delete();    
   const airs = validator.Validate(generator.GenerateAirArray());
