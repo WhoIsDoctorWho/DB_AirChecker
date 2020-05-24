@@ -15,10 +15,12 @@
                 var lineData = [];
                 for (var i = 0; i < response.length; ++i) {
                     var item = response[i];
-                    lineData.push([new Date( Date.parse(item[0])), item[1], item[2]]);
+                    lineData.push([new Date( Date.parse(item[0])), 0.25, 0.45, item[1], item[2]]);
                 }
                 var data = new google.visualization.DataTable();
                 data.addColumn('date', 'Month');
+                data.addColumn('number', "max pm2.5");
+                data.addColumn('number', "max pm10");
                 data.addColumn('number', "pm10");
                 data.addColumn('number', "pm2.5");
 
@@ -31,21 +33,18 @@
                     },
                     width: 1800,
                     height: 700,
-                    // series: {
-                    //     // Gives each series an axis name that matches the Y-axis below.
-                    //     0: { axis: 'pm10' },
-                    //     1: { axis: 'pm2.5' }
-                    // },
-                    axes: {
-                        // Adds labels to each axis; they don't have to match the axis names.
+                    axes: {                        
                         y: {
                             Temps: { label: 'pm10' },
                             Daylight: { label: 'pm2.5' }
                         }
                     }
                 };
-
-                var chart = new google.charts.Line(document.getElementById('chart_div'));
+                var my_div = document.getElementById('chart_div');                
+                var chart = new google.charts.Line(my_div);
+                // google.visualization.events.addListener(chart, 'ready', function () {
+                //     my_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
+                // });
                 chart.draw(data, google.charts.Line.convertOptions(options));
             }, 'json');
         }
@@ -54,7 +53,7 @@
 
 <body>
     <a href="http://localhost:3000">
-        <h1>Go gome</h1>
+        <h1>Go home</h1>
     </a>
     <div id="chart_div"></div>
 </body>

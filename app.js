@@ -66,7 +66,9 @@ app.get("/air", async (req,res) => {
   });
   res.end();                  
 });
-
+app.get("/complex", (req, res) => {
+  res.render('complex');
+});
 app.get("/airaverage/data", (req, res) => {
   air.getAll()
     .then(airs => {
@@ -206,24 +208,69 @@ app.get("/aircomposition", (req, res) => {
 });
 
 
-app.get("/correlation", async (req, res) => {
+app.get("/statistics", async (req, res) => {
   const data = await air.getAll();
   const pollutionArr = data.map(obj => obj.pm10 + obj.pm2_5);
   const humidityArr = data.map(obj => obj.humidity);     
-  res.write(`${Correlation.calc(humidityArr, pollutionArr)}`);
-  res.end();
-});
-app.get("/regression", async (req, res) => {
-  const data = await air.getAll();  
+  const correlation = Correlation.calc(humidityArr, pollutionArr);
   const coordinates = data.map(obj => {
     const pollution = obj.pm10 + obj.pm2_5;
     const humidity = obj.humidity;
     return [humidity, pollution];
   });  
-  const result = Regression.linear(coordinates);
-  res.write(result.string);
-  res.end();
+  const regression = Regression.linear(coordinates);
+  let predictions = [];
+  for(let i = 1; i < 10; i++) {
+    predictions[i-1] = regression.predict(i*10);   
+  }
+  res.json({correlation, regression, predictions});  
 });
+app.get("/isairgood", async (req, res) => {
+  const data = await air.getAll();
+  let averageO2 = d3.mean(data, d => d.o2);
+  let averageCO2 = d3.mean(data, d => d.co2);
+  let resp = "";
+  if(averageCO2 > 0.15) 
+    resp += "Перевищено вміст CO2; ";
+  else 
+    resp += "CO2 в нормі;  ";
+  if(averageO2 < 19.7) 
+    resp += "Недостатній вміст кисню";
+  else 
+    resp += "O2 в нормі";
+  res.json({resp});
+});
+app.get("/istemphumgood", async (req, res) => {
+  const data = await air.getAll();
+  let tempCorrect =  data.every(d => d.temperature > 22 && d.temperature < 26);
+  let humCorrect = data.every(d => d.humidity > 40 && d.humidity < 60); 
+  let resp = "";
+  if(tempCorrect) 
+    resp += "Температура повітря в нормі;  ";
+  else 
+    resp += "Температура повітря не задовольняє рекомандації;  ";
+  if(humCorrect) 
+    resp += "Вологість повітря в нормі";
+  else 
+    resp += "Вологість повітря не задовольняє рекомeндації  ";
+  res.json({resp});
+});
+app.get("/isdustgood", async (req, res) => {
+  const data = await air.getAll();
+  let pm10Correct =  data.every(d => d.pm10 < 0.45);
+  let pm2_5Correct = data.every(d => d.pm2_5 < 0.25); 
+  let resp = "";
+  if(pm10Correct) 
+    resp += "Допустима концентрація pm10;  ";
+  else 
+    resp += "Перевищено допустиму концентрацію pm10;  ";
+  if(pm2_5Correct) 
+    resp += "Допустима концентрація pm2.5";
+  else 
+    resp += "Перевищено допустиму концентрацію pm2.5";
+  res.json({resp});
+});
+
 
 
 app.listen(config.ServerPort, () => {
