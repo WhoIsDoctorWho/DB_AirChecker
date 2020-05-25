@@ -14,6 +14,9 @@ const Correlation = require('node-correlation');
 const Regression = require('regression');
 const _ = require("lodash");
 
+let backup = require('mongodb-backup');
+let restore = require('mongodb-restore');
+
 let dbOptions = { useNewUrlParser: true };
 if(config.DatabaseUrl.indexOf('replicaSet') > - 1) {
     dbOptions = {
@@ -48,10 +51,24 @@ app.set('view engine', 'html');
 app.get("/", async (req,res) => {   
     res.render('index');
 });
+app.get("/backup", async (req,res) => {   
+  await backup({
+    uri: config.DatabaseUrl, 
+    root: __dirname + '/backups'
+  });  
+  res.redirect('/');
+});
+app.get("/restore", async (req,res) => {     
+  await restore({
+    uri: config.DatabaseUrl, 
+    root: __dirname + '/backups/Cource'
+  });
+  res.redirect('/');
+});
 app.get("/drop", (req,res) => {    
   air.delete().then(() => {
       console.log(`Drop`);
-      res.end();
+      res.redirect('/');
   });    
 });
 app.get("/randomize", async (req,res) => {   

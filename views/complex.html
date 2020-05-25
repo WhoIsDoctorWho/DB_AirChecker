@@ -256,7 +256,6 @@
                         break;
                 }
                 const regression = response.regression;
-                my_div.innerHTML += `<p>Лінія регресії: ${regression.string}</p>`;
                 const predictions = response.predictions;
                 my_div.innerHTML += `<h2>Очікувана запиленість при певному рівні вологи:</h2>`;                
                 for(let i = 0; i < predictions.length; i++) {
