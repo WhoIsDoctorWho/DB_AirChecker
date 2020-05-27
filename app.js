@@ -41,12 +41,13 @@ if(config.DatabaseUrl.indexOf('replicaSet') > - 1) {
 mongoose.connect(config.DatabaseUrl, dbOptions)
 	.then(() => console.log("MongoDB connected"))
 	.catch(x => console.log("ERROR: MongoDB not connected" + x));
-
+app.use('/javascripts', express.static(__dirname + '/javascripts/'));
 app.engine('html', consolidate.swig);
 
 app.use("/diagrams", express.static(path.join(__dirname, 'diagrams')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
+
 
 app.get("/", async (req,res) => {   
     res.render('index');

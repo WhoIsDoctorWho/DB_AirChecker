@@ -4,48 +4,14 @@
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/airaverage/data', function (response) {
-                console.log(response);
-
-                var chartData = [];
-                for (var idx = 0; idx < response.length; ++idx) {
-                    var item = response[idx];
-                    chartData.push([item.name, item.amount]);
-                }
-
-                // Create the data table.
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
-                data.addRows(chartData);
-
-                var options = {
-                    title: 'Склад повітря у приміщені:',
-                    width: 1000,
-                    height: 800,
-                    sliceVisibilityThreshol: 0,
-                    is3D: true,
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-
-                chart.draw(data, options);
-            }, 'json');
-        }
-    </script>
+    <script type="application/javascript" src="/javascripts/airaverage.js"></script>
 </head>
 
 <body>
     <a href="http://localhost:3000">
         <h1>Go home</h1>
     </a>
-    <div id="chart_div"></div>
+    <div id="airaverage_chart"></div>    
 </body>
 
 </html>

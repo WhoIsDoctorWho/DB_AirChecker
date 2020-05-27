@@ -1,239 +1,9 @@
 <html>
 <head>    
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/airaverage/data', function (response) {
-                console.log(response);
-
-                var chartData = [];
-                for (var idx = 0; idx < response.length; ++idx) {
-                    var item = response[idx];
-                    chartData.push([item.name, item.amount]);
-                }
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
-                data.addRows(chartData);
-
-                var options = {
-                    title: 'Склад повітря у приміщені:',
-                    width: 1000,
-                    height: 800,
-                    sliceVisibilityThreshol: 0,
-                    is3D: true,
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('chart1_div'));
-
-                chart.draw(data, options);
-            }, 'json');
-        }
-    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['line'] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/aircomposition/data', function (response) {
-                console.log(response);
-                var lineData = [];
-                for (var i = 0; i < response.length; ++i) {
-                    var item = response[i];
-                    lineData.push([new Date( Date.parse(item[0])), item[1], item[2], item[3]]);
-                }
-                var data = new google.visualization.DataTable();
-                data.addColumn('date', 'Month');
-                data.addColumn('number', "CO2");
-                data.addColumn('number', "O2");
-                data.addColumn('number', "N");
-                data.addRows(lineData);
-
-                var options = {
-                    chart: {
-                        title: 'Зміна складу повітря за останній рік:'
-                    },
-                    width: 1800,
-                    height: 700,
-                    series: {
-                        // Gives each series an axis name that matches the Y-axis below.
-                        0: { axis: 'CO2' }
-                    },
-                    axes: {
-                        // Adds labels to each axis; they don't have to match the axis names.
-                        y: {
-                            Temps: { label: 'pm10' },
-                            Daylight: { label: 'pm2.5' }
-                        }
-                    }
-                };
-
-                var chart = new google.charts.Line(document.getElementById('chart2_div'));
-                chart.draw(data, google.charts.Line.convertOptions(options));
-            }, 'json');
-        }
-    </script>
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/pmaverage/data', function (response) {
-                console.log(response);
-
-                var chartData = [];
-                for (var idx = 0; idx < response.length; ++idx) {
-                    var item = response[idx];
-                    chartData.push([item.name, item.amount]);
-                }
-
-                // Create the data table.
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
-                data.addRows(chartData);
-
-                var options = {                    
-                    title: 'Відношення дрібних частинок у приміщені:',
-                    width: 1000,
-                    height: 800,
-                    sliceVisibilityThreshol: 0,
-                    pieHole: 0.4,
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('chart3_div'));
-
-                chart.draw(data, options);
-            }, 'json');
-        }
-    </script>
-    <script type="text/javascript">
-        google.charts.load('current', {'packages':['scatter']});
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/pmVsHum/data', function (response) {
-                console.log(response);
-
-                // Create the data table.
-                var data = new google.visualization.DataTable();
-                data.addColumn('number', 'Pollution');
-                data.addColumn('number', 'Humidity');
-                data.addColumn('number', 'Regression');
-                data.addRows(response);
-
-                var options = {
-                    title: 'Залежність забрудненості від вологості:',
-                    width: 1000,
-                    height: 800,
-                    hAxis: { title: 'Pollution' },
-                    vAxis: { title: 'Humidity' },
-                };
-
-                var chart = new google.charts.Scatter(document.getElementById('chart4_div'));
-
-                chart.draw(data, google.charts.Scatter.convertOptions(options));
-            }, 'json');
-        }
-    </script>
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['line'] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/pollution/data', function (response) {
-                console.log(response);
-                var lineData = [];
-                for (var i = 0; i < response.length; ++i) {
-                    var item = response[i];
-                    lineData.push([new Date( Date.parse(item[0])), 0.25, 0.45, item[1], item[2]]);
-                }
-                var data = new google.visualization.DataTable();
-                data.addColumn('date', 'Month');
-                data.addColumn('number', "max pm2.5");
-                data.addColumn('number', "max pm10");
-                data.addColumn('number', "pm10");
-                data.addColumn('number', "pm2.5");
-
-                console.log(typeof lineData[0][0]);
-                data.addRows(lineData);
-
-                var options = {
-                    chart: {
-                        title: 'Забрудненість повітря дрібними частинками за останній рік:'
-                    },
-                    width: 1800,
-                    height: 700,
-                    axes: {                        
-                        y: {
-                            Temps: { label: 'pm10' },
-                            Daylight: { label: 'pm2.5' }
-                        }
-                    }
-                };
-                var my_div = document.getElementById('chart5_div');                
-                var chart = new google.charts.Line(my_div);
-                // google.visualization.events.addListener(chart, 'ready', function () {
-                //     my_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
-                // });
-                chart.draw(data, google.charts.Line.convertOptions(options));
-            }, 'json');
-        }
-    </script>
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['line'] });
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-            $.get('/tempandhum/data', function (response) {
-                console.log(response);
-                var lineData = [];
-                for (var i = 0; i < response.length; ++i) {
-                    var item = response[i];
-                    lineData.push([new Date( Date.parse(item[0])), 20, 25, 40, 60, item[1], item[2]]);
-                }
-                var data = new google.visualization.DataTable();
-                data.addColumn('date', 'Month');
-                data.addColumn('number', "Normal Temperature (low param)");
-                data.addColumn('number', "Normal Temperature (high param)");
-                data.addColumn('number', "Normal Humidity (low param)");
-                data.addColumn('number', "Normal Humidity (high param)");
-                data.addColumn('number', "Temperature");
-                data.addColumn('number', "Humidity");
-
-                console.log(typeof lineData[0][0]);
-                data.addRows(lineData);
-
-                var options = {
-                    chart: {
-                        title: 'Показники температури і вологості за останній рік:'
-                    },
-                    width: 1800,
-                    height: 700,
-                    axes: {                      
-                        y: {
-                            Temps: { label: 'Temperature' },
-                            Daylight: { label: 'Humidity' }
-                        }
-                    }
-                };
-
-                var chart = new google.charts.Line(document.getElementById('chart6_div'));
-                // google.visualization.events.addListener(chart, 'ready', function () {
-                //     var imgUri = chart.getImageURI();
-                //     // do something with the image URI, like:
-                //     document.getElementById('chartImg').src = imgUri;
-                // });
-                chart.draw(data, google.charts.Line.convertOptions(options));
-            }, 'json');
-        }
-    </script>
     <script type="text/javascript">
             $.get('/statistics', function (response) {
                 var my_div = document.getElementById('data4_div'); 
@@ -289,16 +59,23 @@
         <h1>Go home</h1>        
     </a>
     <h1>Натисніть Ctrl+P для друку або збереження звіту</h1>
-    <div id="chart1_div"></div>
+    <div id="airaverage_chart"></div>
     <div id="data1_div"></div>
-    <div id="chart2_div"></div>
-    <div id="chart3_div"></div>
-    <div id="chart4_div"></div>
+    <div id="aircomposition_chart"></div>
+    <div id="pmaverage_chart"></div>
+    <div id="pmvshum_chart"></div>
     <div id="data4_div"></div>
-    <div id="chart5_div"></div>
+    <div id="pollution_chart"></div>
     <div id="data5_div"></div>
-    <div id="chart6_div"></div>
+    <div id="tempandhum_chart"></div>
     <div id="data6_div"></div>
+
+    <script src="../javascripts/airaverage.js"></script>
+    <script src="../javascripts/aircomposition.js"></script>
+    <script src="../javascripts/pmaverage.js"></script>
+    <script src="../javascripts/pmvshum.js"></script>
+    <script src="../javascripts/pollution.js"></script>
+    <script src="../javascripts/tempandhum.js"></script>
 </body>
 
 </html>
